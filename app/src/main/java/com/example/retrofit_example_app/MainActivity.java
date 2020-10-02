@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     public TextView Id;
     public TextView Title;
     public TextView Text;
+    RecyclerView recyclerView;
+    JsonPlaceHolderApi jsonPlaceHolderApi;
 
 
     @Override
@@ -35,12 +38,9 @@ public class MainActivity extends AppCompatActivity {
         Text =(TextView) findViewById(R.id.text_view_text);
 
 
-        final RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerView.setHasFixedSize(true);
-
-
-
 
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -48,41 +48,58 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        JsonPlaceHolderApi jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+        getPost();
+        //getComment();
 
-        Call<List<Post>>  call = jsonPlaceHolderApi.getPosts();
+
+    }
+
+    private void getPost() {
+
+       Call<List<Post>>  call = jsonPlaceHolderApi.getPosts(new Integer[]{2,3,7},"id","desc");
 
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
 
                 if (!response.isSuccessful()){
-                    Title.setText("Error");
+                    System.out.println("hataa");
                 }
 
                 List<Post> posts = response.body();
-
-
-
                 final PostAdapter adapter = new PostAdapter(posts,MainActivity.this);
                 recyclerView.setAdapter(adapter);
-
-
-
-
-
 
             }
 
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
-
                 System.out.println("hataa");
-
             }
         });
+    }
 
+    private void getComment(){
+        Call<List<Comment>> call = jsonPlaceHolderApi.getComments(3);
 
+        call.enqueue(new Callback<List<Comment>>() {
+            @Override
+            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
+                if (!response.isSuccessful()){
+                    System.out.println("hataa");
+                }
 
+                List<Comment> comments = response.body();
+                CommentAdapter adapter = new CommentAdapter(comments,MainActivity.this);
+                recyclerView.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Comment>> call, Throwable t) {
+                System.out.println("hataa");
+            }
+        });
     }
 }
