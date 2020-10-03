@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -49,10 +50,39 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
-        getPost();
+        //getPost();
         //getComment();
+        createPost();
 
 
+    }
+
+    private void createPost() {
+
+        Post post = new Post(3,"myTitle","myText");
+        Call<Post> call = jsonPlaceHolderApi.createPost(5,"mySecondTitle","mySecondText");
+        call.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                if (!response.isSuccessful()){
+                    System.out.println("hataa");
+                }
+
+                List<Post> list = new ArrayList<>();
+                Post postResponse = response.body();
+                list.add(postResponse);
+
+                PostAdapter adapter = new PostAdapter(list,MainActivity.this);
+                recyclerView.setAdapter(adapter);
+
+
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+                System.out.println("hataa");
+            }
+        });
     }
 
     private void getPost() {
