@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     public TextView Text;
     RecyclerView recyclerView;
     JsonPlaceHolderApi jsonPlaceHolderApi;
+    List<Post> list;
 
 
     @Override
@@ -52,9 +53,83 @@ public class MainActivity extends AppCompatActivity {
         jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
         //getPost();
         //getComment();
-        createPost();
+        //createPost();
+        //putPost();
+        //patchPost();
+        deletePost();
+
+    }
+
+    private void deletePost() {
+        Call<Void> call = jsonPlaceHolderApi.deletePost(5);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+            System.out.println(response.code());
+
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    private void patchPost() {
+        Post post = new Post(12,null,"retrofit" );
+        Call<Post> call = jsonPlaceHolderApi.patchPost(7,post);
+        call.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                if (!response.isSuccessful()){
+                    System.out.println("hataa");
+                }
+
+                Post putResponse = response.body();
+                list = new ArrayList<>();
+                list.add(putResponse);
+                PostAdapter postAdapter = new PostAdapter(list,MainActivity.this);
+                recyclerView.setAdapter(postAdapter);
 
 
+
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+                System.out.println("hataa");
+            }
+        });
+
+    }
+
+    private void putPost() {
+        Post post = new Post(5,"deniyorum","retrofit" );
+        Call<Post> call = jsonPlaceHolderApi.putPost(12,post);
+        call.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                if (!response.isSuccessful()){
+                    System.out.println("hataa");
+                }
+
+                Post putResponse = response.body();
+                list = new ArrayList<>();
+                list.add(putResponse);
+                PostAdapter postAdapter = new PostAdapter(list,MainActivity.this);
+                recyclerView.setAdapter(postAdapter);
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+                System.out.println("hataa");
+            }
+        });
     }
 
     private void createPost() {
@@ -68,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("hataa");
                 }
 
-                List<Post> list = new ArrayList<>();
+                list = new ArrayList<>();
                 Post postResponse = response.body();
                 list.add(postResponse);
 
@@ -132,4 +207,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }
