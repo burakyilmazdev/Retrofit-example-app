@@ -1,4 +1,4 @@
 # Retrofit-example-app
 Retrofit example app
 
-Still being developed.
+Retrofit library has been used.
