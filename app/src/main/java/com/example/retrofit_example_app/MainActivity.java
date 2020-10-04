@@ -55,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
         //getComment();
         //createPost();
         //putPost();
-        //patchPost();
-        deletePost();
+        patchPost();
+        //deletePost();
 
     }
 
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void patchPost() {
         Post post = new Post(12,null,"retrofit" );
-        Call<Post> call = jsonPlaceHolderApi.patchPost(7,post);
+        Call<Post> call = jsonPlaceHolderApi.patchPost("example",7,post);
         call.enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {
